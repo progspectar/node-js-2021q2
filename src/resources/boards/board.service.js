@@ -5,7 +5,7 @@ const boadsResp = require('./board.responses');
 const getAll = () => {
   try {
     const items = boardsRepo.getAll();
-    console.log(items);
+
     const ref = User.toResponse(items);
     return { status: boadsResp._getAll.Ok, ref };
   } catch (error) {

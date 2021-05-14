@@ -13,6 +13,7 @@ const BOARDS = [
 ];
 
 const getAll = () => BOARDS;
+/// ////////////////////////////////////////
 const getById = (id) => {
   const user = BOARDS.find((item) => item.id === id);
   return user;
@@ -30,7 +31,7 @@ const update = ({ id, name, login, password }) => {
   if (id === undefined) {
     return undefined;
   }
-
+  /// ////////////////////////////////////////
   const newUser = BOARDS.find((item) => item.id === id);
   if (newUser === undefined) {
     return undefined;
