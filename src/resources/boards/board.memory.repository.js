@@ -1,5 +1,6 @@
 const { v4: getId } = require('uuid');
 const User = require('./board.model');
+const tasksRepo = require('../tasks/task.memory.repository');
 
 const BOARDS = [
   {
@@ -27,29 +28,31 @@ const create = (body) => {
 };
 
 /// ////////////////////////////////////////
-const update = ({ id, name, login, password }) => {
+const update = ({ id, title, columns }) => {
   if (id === undefined) {
     return undefined;
   }
-  /// ////////////////////////////////////////
-  const newUser = BOARDS.find((item) => item.id === id);
-  if (newUser === undefined) {
+  const updatedItem = getById(id);
+  if (updatedItem === undefined) {
     return undefined;
   }
-  newUser.login = login === undefined ? newUser.login : login;
-  newUser.name = name === undefined ? newUser.name : name;
-  newUser.password = password === undefined ? newUser.password : password;
-  return newUser;
+  updatedItem.title = title === undefined ? updatedItem.title : title;
+  if (Array.isArray(columns)) {
+    // shallow copy
+    updatedItem.columns = [...columns];
+  }
+  return updatedItem;
 };
 /// ///////////////////////////////////////////////
-const deleteUser = (id) => {
-  const user = getById(id);
-  const index = BOARDS.indexOf(user);
+const cutout = (id) => {
+  const item = getById(id);
+  const index = BOARDS.indexOf(item);
   if (index > -1) {
     BOARDS.splice(index, 1);
-    return user;
+    tasksRepo.cutoutByAttr(id, 'boardId');
+    return item;
   }
   return undefined;
 };
 
-module.exports = { getAll, getById, create, update, deleteUser };
+module.exports = { getAll, getById, create, update, cutout };

@@ -1,16 +1,16 @@
 const boardsRepo = require('./board.memory.repository');
 const User = require('./board.model');
-const boadsResp = require('./board.responses');
+const BOARDS_RESPONSES = require('./board.responses');
 
 const getAll = () => {
   try {
     const items = boardsRepo.getAll();
 
     const ref = User.toResponse(items);
-    return { status: boadsResp._getAll.Ok, ref };
+    return { status: BOARDS_RESPONSES._getAll.Ok, ref };
   } catch (error) {
     return {
-      status: boadsResp._getAll.BadRequest,
+      status: BOARDS_RESPONSES._getAll.BadRequest,
       ref: '',
     };
   }
@@ -21,10 +21,10 @@ const create = (body) => {
     const item = boardsRepo.create(body);
     const ref = User.toResponse(item);
 
-    return { status: boadsResp._create.Ok, ref };
+    return { status: BOARDS_RESPONSES._create.Ok, ref };
   } catch (error) {
     return {
-      status: boadsResp._create.BadRequest,
+      status: BOARDS_RESPONSES._create.BadRequest,
       ref: '',
     };
   }
@@ -34,13 +34,16 @@ const getById = (id) => {
   try {
     const item = boardsRepo.getById(id);
     if (item === undefined) {
-      const result = { status: boadsResp._getById.UserNotFound, ref: '' };
+      const result = {
+        status: BOARDS_RESPONSES._getById.UserNotFound,
+        ref: '',
+      };
       return result;
     }
-    return { status: boadsResp._getById.Ok, ref: User.toResponse(item) };
+    return { status: BOARDS_RESPONSES._getById.Ok, ref: User.toResponse(item) };
   } catch (error) {
     return {
-      status: boadsResp._getById.BadRequest,
+      status: BOARDS_RESPONSES._getById.BadRequest,
       ref: '',
     };
   }
@@ -49,20 +52,20 @@ const getById = (id) => {
 const update = (params) => {
   const item = boardsRepo.update(params);
   if (item !== undefined) {
-    return { status: boadsResp._update.Ok, ref: User.toResponse(item) };
+    return { status: BOARDS_RESPONSES._update.Ok, ref: User.toResponse(item) };
   }
   return {
-    status: boadsResp._create.BadRequest,
+    status: BOARDS_RESPONSES._create.BadRequest,
     ref: '',
   };
 };
 
-const deleteUser = (id) => {
-  const item = boardsRepo.deleteUser(id);
+const cutout = (id) => {
+  const item = boardsRepo.cutout(id);
   if (item !== undefined) {
-    return { status: boadsResp._delete.Ok, ref: User.toResponse(item) };
+    return { status: BOARDS_RESPONSES._delete.Ok, ref: User.toResponse(item) };
   }
-  return { status: boadsResp._delete.UserNotFound, ref: '' };
+  return { status: BOARDS_RESPONSES._delete.UserNotFound, ref: '' };
 };
 
-module.exports = { getAll, create, getById, update, deleteUser };
+module.exports = { getAll, create, getById, update, cutout };

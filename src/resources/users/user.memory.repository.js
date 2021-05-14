@@ -30,14 +30,15 @@ const update = ({ id, name, login, password }) => {
     return undefined;
   }
 
-  const newUser = USERS.find((item) => item.id === id);
-  if (newUser === undefined) {
+  const updatedItem = USERS.find((item) => item.id === id);
+  if (updatedItem === undefined) {
     return undefined;
   }
-  newUser.login = login === undefined ? newUser.login : login;
-  newUser.name = name === undefined ? newUser.name : name;
-  newUser.password = password === undefined ? newUser.password : password;
-  return newUser;
+  updatedItem.login = login === undefined ? updatedItem.login : login;
+  updatedItem.name = name === undefined ? updatedItem.name : name;
+  updatedItem.password =
+    password === undefined ? updatedItem.password : password;
+  return updatedItem;
 };
 /// ///////////////////////////////////////////////
 const deleteUser = (id) => {
