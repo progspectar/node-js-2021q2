@@ -1,26 +1,27 @@
 const { v4: getId } = require('uuid');
-const User = require('./user.model');
+const User = require('./board.model');
 
-const USERS = [
+const BOARDS = [
   {
     id: '1',
-    name: 'Tom',
-    login: 'tom',
-    password: '123',
+    title: 'solve task 1',
+    columns: [
+      { id: '1', title: 'co1', order: 'order1' },
+      { id: '2', title: 'col2', order: 'order2' },
+    ],
   },
-  { id: '2', name: 'John', login: 'john', password: '123' },
 ];
 
-const getAll = () => USERS;
+const getAll = () => BOARDS;
 const getById = (id) => {
-  const user = USERS.find((item) => item.id === id);
+  const user = BOARDS.find((item) => item.id === id);
   return user;
 };
 /// ////////////////////////////////////////
 const create = (body) => {
   const params = { id: getId(), ...body };
   const user = new User(params);
-  USERS.push(user);
+  BOARDS.push(user);
   return user;
 };
 
@@ -30,7 +31,7 @@ const update = ({ id, name, login, password }) => {
     return undefined;
   }
 
-  const newUser = USERS.find((item) => item.id === id);
+  const newUser = BOARDS.find((item) => item.id === id);
   if (newUser === undefined) {
     return undefined;
   }
@@ -42,9 +43,9 @@ const update = ({ id, name, login, password }) => {
 /// ///////////////////////////////////////////////
 const deleteUser = (id) => {
   const user = getById(id);
-  const index = USERS.indexOf(user);
+  const index = BOARDS.indexOf(user);
   if (index > -1) {
-    USERS.splice(index, 1);
+    BOARDS.splice(index, 1);
     return user;
   }
   return undefined;
