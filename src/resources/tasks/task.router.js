@@ -3,29 +3,32 @@ const tasksService = require('./task.service');
 
 router
   .route('/')
-  .get((req, res) => {
-    const result = tasksService.getAll(res);
+  .get(async (req, res) => {
+    const { boardId } = req.params;
+    const result = await tasksService.getAll(boardId);
     res.status(result.status).json(result.ref);
   })
-  .post((req, res) => {
-    const result = tasksService.create(req.body);
+  .post(async (req, res) => {
+    const { boardId } = req.params;
+    const result = await tasksService.create(boardId, req.body);
     res.status(result.status).json(result.ref);
   });
 
 router
   .route('/:taskId')
-  .get((req, res) => {
+  .get(async (req, res) => {
     const { boardId, taskId } = req.params;
-    const result = tasksService.getById(boardId, taskId);
+    const result = await tasksService.getById(boardId, taskId);
     res.status(result.status).json(result.ref);
   })
-  .put((req, res) => {
-    const params = { id: req.params.id, ...req.body };
-    const result = tasksService.update(params);
+  .put(async (req, res) => {
+    const { boardId, taskId } = req.params;
+    const result = await tasksService.update(boardId, taskId, req.body);
     res.status(result.status).json(result.ref);
   })
-  .delete((req, res) => {
-    const result = tasksService.deleteUser(req.params.id);
+  .delete(async (req, res) => {
+    const { boardId, taskId } = req.params;
+    const result = await tasksService.remove(boardId, taskId);
     res.status(result.status).json(result.ref);
   });
 

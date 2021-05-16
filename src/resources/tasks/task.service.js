@@ -1,11 +1,11 @@
 const tasksRepo = require('./task.memory.repository');
-const User = require('./task.model');
+const Task = require('./task.model');
 const tasksResp = require('./task.responses');
 
-const getAll = () => {
+const getAll = (boardId) => {
   try {
-    const items = tasksRepo.getAll();
-    const ref = User.toResponse(items);
+    const items = tasksRepo.getAll(boardId);
+    const ref = items.map(Task.toResponse);
     return { status: tasksResp._getAll.Ok, ref };
   } catch (error) {
     return {
@@ -15,53 +15,39 @@ const getAll = () => {
   }
 };
 
-const create = (body) => {
-  try {
-    const item = tasksRepo.create(body);
-    const ref = User.toResponse(item);
-
-    return { status: tasksResp._create.Ok, ref };
-  } catch (error) {
-    return {
-      status: tasksResp._create.BadRequest,
-      ref: '',
-    };
-  }
+const create = (boardId, body) => {
+  const entity = Task.fromRequest(body);
+  entity.boardId = boardId;
+  const item = tasksRepo.create(entity);
+  const ref = Task.toResponse(item);
+  return { status: tasksResp._create.Ok, ref };
 };
 
-const getById = (id) => {
-  try {
-    const item = tasksRepo.getById(id);
-    if (item === undefined) {
-      const result = { status: tasksResp._getById.UserNotFound, ref: '' };
-      return result;
-    }
-    return { status: tasksResp._getById.Ok, ref: User.toResponse(item) };
-  } catch (error) {
-    return {
-      status: tasksResp._getById.BadRequest,
-      ref: '',
-    };
+const getById = (boardId, taskId) => {
+  const task = tasksRepo.getById(boardId, taskId);
+  if (task === undefined) {
+    return { status: tasksResp._getById.NotFound, ref: '' };
   }
+  return { status: tasksResp._getById.Ok, ref: Task.toResponse(task) };
 };
 
-const update = (params) => {
-  const item = tasksRepo.update(params);
-  if (item !== undefined) {
-    return { status: tasksResp._update.Ok, ref: User.toResponse(item) };
+const update = (boardId, taskId, body) => {
+  const entity = Task.fromRequest(body);
+  entity.boardId = boardId;
+  entity.taskId = taskId;
+  const task = tasksRepo.update(boardId, taskId, entity);
+  if (task === undefined) {
+    return { status: tasksResp._update.NotFound, ref: '' };
   }
-  return {
-    status: tasksResp._create.BadRequest,
-    ref: '',
-  };
+  return { status: tasksResp._update.Ok, ref: Task.toResponse(task) };
 };
 
-const cutout = (id) => {
-  const item = tasksRepo.cutout(id);
-  if (item !== undefined) {
-    return { status: tasksResp._delete.Ok, ref: User.toResponse(item) };
+const remove = (boardId, taskId) => {
+  const task = tasksRepo.remove(boardId, taskId);
+  if (task === undefined) {
+    return { status: tasksResp._delete.UserNotFound, ref: '' };
   }
-  return { status: tasksResp._delete.UserNotFound, ref: '' };
+  return { status: tasksResp._delete.Ok, ref: Task.toResponse(task) };
 };
 
-module.exports = { getAll, create, getById, update, cutout };
+module.exports = { getAll, create, getById, update, remove };

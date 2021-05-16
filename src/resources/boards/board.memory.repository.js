@@ -1,5 +1,3 @@
-const { v4: getId } = require('uuid');
-const User = require('./board.model');
 const tasksRepo = require('../tasks/task.memory.repository');
 
 const BOARDS = [
@@ -15,16 +13,11 @@ const BOARDS = [
 
 const getAll = () => BOARDS;
 /// ////////////////////////////////////////
-const getById = (id) => {
-  const user = BOARDS.find((item) => item.id === id);
-  return user;
-};
+const getById = (id) => BOARDS.find((item) => item.id === id);
 /// ////////////////////////////////////////
-const create = (body) => {
-  const params = { id: getId(), ...body };
-  const user = new User(params);
-  BOARDS.push(user);
-  return user;
+const create = (entity) => {
+  BOARDS.push(entity);
+  return entity;
 };
 
 /// ////////////////////////////////////////
@@ -44,15 +37,15 @@ const update = ({ id, title, columns }) => {
   return updatedItem;
 };
 /// ///////////////////////////////////////////////
-const cutout = (id) => {
+const remove = (id) => {
   const item = getById(id);
   const index = BOARDS.indexOf(item);
   if (index > -1) {
     BOARDS.splice(index, 1);
-    tasksRepo.cutoutByAttr(id, 'boardId');
+    tasksRepo.removeByAttr(id, 'boardId');
     return item;
   }
   return undefined;
 };
 
-module.exports = { getAll, getById, create, update, cutout };
+module.exports = { getAll, getById, create, update, remove };

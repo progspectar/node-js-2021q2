@@ -16,16 +16,10 @@ const getAll = () => {
 };
 
 const create = (body) => {
-  try {
-    const user = usersRepo.create(body);
-    const ref = User.toResponse(user);
-    return { status: USERS_RESPONSES._create.Ok, ref };
-  } catch (error) {
-    return {
-      status: USERS_RESPONSES._create.BadRequest,
-      ref: '',
-    };
-  }
+  const entity = new User({ ...body });
+  const user = usersRepo.create(entity);
+  const ref = User.toResponse(user);
+  return { status: USERS_RESPONSES._create.Ok, ref };
 };
 
 const getById = (id) => {

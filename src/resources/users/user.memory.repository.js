@@ -1,5 +1,4 @@
-const { v4: getId } = require('uuid');
-const User = require('./user.model');
+const tasksRepo = require('../tasks/task.memory.repository');
 
 const USERS = [
   {
@@ -17,11 +16,9 @@ const getById = (id) => {
   return user;
 };
 /// ////////////////////////////////////////
-const create = (body) => {
-  const params = { id: getId(), ...body };
-  const user = new User(params);
-  USERS.push(user);
-  return user;
+const create = (entity) => {
+  USERS.push(entity);
+  return entity;
 };
 
 /// ////////////////////////////////////////
@@ -46,6 +43,7 @@ const deleteUser = (id) => {
   const index = USERS.indexOf(user);
   if (index > -1) {
     USERS.splice(index, 1);
+    tasksRepo.setValueByAttr(id, 'userId', null);
     return user;
   }
   return undefined;

@@ -23,7 +23,7 @@ module.exports = {
 
   _delete: {
     Ok: 204,
-    UserNotFound: 404,
+    BoardNotFound: 404,
     UnauthorizedError: 401,
   },
 };

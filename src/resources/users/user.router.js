@@ -4,28 +4,28 @@ const usersService = require('./user.service');
 
 router
   .route('/')
-  .get((req, res) => {
-    const result = usersService.getAll(res);
+  .get(async (req, res) => {
+    const result = await usersService.getAll(res);
     res.status(result.status).json(result.ref);
   })
-  .post((req, res) => {
-    const result = usersService.create(req.body);
+  .post(async (req, res) => {
+    const result = await usersService.create(req.body);
     res.status(result.status).json(result.ref);
   });
 
 router
   .route('/:id')
-  .get((req, res) => {
-    const result = usersService.getById(req.params.id);
+  .get(async (req, res) => {
+    const result = await usersService.getById(req.params.id);
     res.status(result.status).json(result.ref);
   })
-  .put((req, res) => {
+  .put(async (req, res) => {
     const params = { id: req.params.id, ...req.body };
-    const result = usersService.update(params);
+    const result = await usersService.update(params);
     res.status(result.status).json(result.ref);
   })
-  .delete((req, res) => {
-    const result = usersService.deleteUser(req.params.id);
+  .delete(async (req, res) => {
+    const result = await usersService.deleteUser(req.params.id);
     res.status(result.status).json(result.ref);
   });
 

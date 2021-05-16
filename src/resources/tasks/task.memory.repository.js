@@ -1,82 +1,58 @@
-const { v4: getId } = require('uuid');
-const User = require('./task.model');
-
-const DATABASE = [
-  {
-    id: '1',
-    title: 'task 1',
-    order: 0,
-    description: 'task 1 version 1',
-    userId: '1',
-    boardId: '1',
-    columnId: '1',
-  },
-  {
-    id: '2',
-    title: 'task 1',
-    order: 0,
-    description: 'task 1 version 2',
-    userId: '1',
-    boardId: '3',
-    columnId: '1',
-  },
-  {
-    id: '3',
-    title: 'task 1',
-    order: 0,
-    description: 'task 1 version 3',
-    userId: '2',
-    boardId: '2',
-    columnId: '2',
-  },
-];
-
-const getAll = () => DATABASE;
+const TASKS = require('./task.database');
 /// ////////////////////////////////////////
-const getById = (id) => {
-  const user = DATABASE.find((item) => item.id === id);
-  return user;
+const getAll = (boardId) => TASKS.filter((item) => item.boardId === boardId);
+/// ////////////////////////////////////////
+const getById = (boardId, taskId) => {
+  const tasks = TASKS.find(
+    (item) => item.boardId === boardId && item.id === taskId
+  );
+  return tasks;
 };
 /// ////////////////////////////////////////
-const create = (body) => {
-  const params = { id: getId(), ...body };
-  const user = new User(params);
-  DATABASE.push(user);
-  return user;
+const create = (task) => {
+  TASKS.push(task);
+  return task;
 };
-
 /// ////////////////////////////////////////
-const update = ({ id, name, login, password }) => {
-  if (id === undefined) {
-    return undefined;
-  }
-  /// ////////////////////////////////////////
-  const newUser = DATABASE.find((item) => item.id === id);
-  if (newUser === undefined) {
-    return undefined;
-  }
-  newUser.login = login === undefined ? newUser.login : login;
-  newUser.name = name === undefined ? newUser.name : name;
-  newUser.password = password === undefined ? newUser.password : password;
-  return newUser;
+const update = (boardId, taskId, entity) => {
+  let task = getById(boardId, taskId);
+  if (task === undefined) return task;
+  task = { ...task, ...entity };
+  return task;
 };
 /// ///////////////////////////////////////////////
-const cutout = (id) => {
-  const user = getById(id);
-  const index = DATABASE.indexOf(user);
+const remove = (boardId, taskId) => {
+  const task = getById(boardId, taskId);
+  const index = TASKS.indexOf(task);
   if (index > -1) {
-    DATABASE.splice(index, 1);
-    return user;
+    TASKS.splice(index, 1);
   }
-  return undefined;
+  return task;
 };
 
 // void
-const cutoutByAttr = (value, attr) => {
-  DATABASE.splice(
-    DATABASE.findIndex((item) => item[attr] === value),
-    1
-  );
+const removeByAttr = (value, attr) => {
+  for (let i = TASKS.length - 1; i >= 0; i -= 1) {
+    if (TASKS[i][attr] === value) {
+      TASKS.splice(i, 1);
+    }
+  }
 };
 
-module.exports = { getAll, getById, create, update, cutout, cutoutByAttr };
+const setValueByAttr = (value, attr, newValue) => {
+  for (let i = TASKS.length - 1; i >= 0; i -= 1) {
+    if (TASKS[i][attr] === value) {
+      TASKS[i][attr] = newValue;
+    }
+  }
+};
+
+module.exports = {
+  getAll,
+  getById,
+  create,
+  update,
+  remove,
+  removeByAttr,
+  setValueByAttr,
+};

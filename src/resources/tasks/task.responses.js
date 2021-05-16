@@ -11,7 +11,7 @@ module.exports = {
 
   _getById: {
     Ok: 200,
-    UserNotFound: 404,
+    NotFound: 404,
     UnauthorizedError: 401,
   },
 
@@ -19,6 +19,7 @@ module.exports = {
     Ok: 200,
     BadRequest: 400,
     UnauthorizedError: 401,
+    NotFound: 404,
   },
 
   _delete: {

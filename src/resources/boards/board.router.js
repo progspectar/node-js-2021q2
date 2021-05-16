@@ -3,30 +3,35 @@ const boardsService = require('./board.service');
 
 router
   .route('/')
-  .get((req, res) => {
-    const result = boardsService.getAll(res);
+  .get(async (req, res) => {
+    const result = await boardsService.getAll(res);
     res.status(result.status).json(result.ref);
   })
-  .post((req, res) => {
-    const result = boardsService.create(req.body);
-    res.status(result.status).json(result.ref);
+  .post(async (req, res, next) => {
+    try {
+      const { title, columns } = req.body;
+      const result = await boardsService.create(title, columns);
+      return res.status(result.status).json(result.ref);
+    } catch (error) {
+      return next(error);
+    }
   });
 
 router
   .route('/:id')
-  .get((req, res) => {
-    const result = boardsService.getById(req.params.id);
+  .get(async (req, res) => {
+    const { id } = req.params;
+    const result = await boardsService.getById(id);
     res.status(result.status).json(result.ref);
   })
-  .put((req, res) => {
+  .put(async (req, res) => {
     const { id } = req.params;
     const params = { id, ...req.body };
-
-    const result = boardsService.update(params);
+    const result = await boardsService.update(params);
     res.status(result.status).json(result.ref);
   })
-  .delete((req, res) => {
-    const result = boardsService.cutout(req.params.id);
+  .delete(async (req, res) => {
+    const result = await boardsService.remove(req.params.id);
     res.status(result.status).json(result.ref);
   });
 
