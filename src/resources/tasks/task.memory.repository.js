@@ -1,19 +1,18 @@
 const TASKS = require('./task.database');
-/// ////////////////////////////////////////
+
 const getAll = (boardId) => TASKS.filter((item) => item.boardId === boardId);
-/// ////////////////////////////////////////
+
 const getById = (boardId, taskId) => {
   const tasks = TASKS.find(
     (item) => item.boardId === boardId && item.id === taskId
   );
   return tasks;
 };
-/// ////////////////////////////////////////
+
 const create = (task) => {
   TASKS.push(task);
   return task;
 };
-/// ////////////////////////////////////////
 
 const getByIdAndUpdate = async (boardId, taskId, entity) => {
   const task = await getById(boardId, taskId);
@@ -30,8 +29,6 @@ const getByIdAndUpdate = async (boardId, taskId, entity) => {
 };
 const update = (boardId, taskId, entity) =>
   getByIdAndUpdate(boardId, taskId, entity);
-
-/// ///////////////////////////////////////////////
 const getByIdAndRemove = (boardId, taskId) => {
   const task = getById(boardId, taskId);
   const index = TASKS.indexOf(task);

@@ -12,15 +12,12 @@ const BOARDS = [
 ];
 
 const getAll = () => BOARDS;
-/// ////////////////////////////////////////
 const getById = (id) => BOARDS.find((item) => item.id === id);
-/// ////////////////////////////////////////
+
 const create = (entity) => {
   BOARDS.push(entity);
   return entity;
 };
-
-/// ////////////////////////////////////////
 const update = ({ id, title, columns }) => {
   if (id === undefined) {
     return undefined;
@@ -36,7 +33,7 @@ const update = ({ id, title, columns }) => {
   }
   return updatedItem;
 };
-/// ///////////////////////////////////////////////
+/// ////
 const remove = (id) => {
   const item = getById(id);
   const index = BOARDS.indexOf(item);
