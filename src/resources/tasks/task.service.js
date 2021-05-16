@@ -33,11 +33,11 @@ const getById = (boardId, taskId) => {
 
 const update = (boardId, taskId, body) => {
   const entity = Task.fromRequest(body);
-  entity.boardId = boardId;
-  entity.taskId = taskId;
+  // entity.boardId = boardId;
+  // entity.taskId = taskId;
   const task = tasksRepo.update(boardId, taskId, entity);
   if (task === undefined) {
-    return { status: tasksResp._update.NotFound, ref: '' };
+    return { status: tasksResp._update.NotFound, ref: 'Task not found' };
   }
   return { status: tasksResp._update.Ok, ref: Task.toResponse(task) };
 };

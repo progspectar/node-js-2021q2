@@ -14,14 +14,25 @@ const create = (task) => {
   return task;
 };
 /// ////////////////////////////////////////
-const update = (boardId, taskId, entity) => {
-  let task = getById(boardId, taskId);
+
+const getByIdAndUpdate = async (boardId, taskId, entity) => {
+  const task = await getById(boardId, taskId);
   if (task === undefined) return task;
-  task = { ...task, ...entity };
+  // Destructuring assignment would't let pass Autotest updated task
+  task.id = entity.id;
+  task.title = entity.title;
+  task.order = entity.order;
+  task.description = entity.description;
+  task.userId = entity.userId;
+  task.boardId = entity.boardId;
+  task.columnId = entity.columnId;
   return task;
 };
+const update = (boardId, taskId, entity) =>
+  getByIdAndUpdate(boardId, taskId, entity);
+
 /// ///////////////////////////////////////////////
-const remove = (boardId, taskId) => {
+const getByIdAndRemove = (boardId, taskId) => {
   const task = getById(boardId, taskId);
   const index = TASKS.indexOf(task);
   if (index > -1) {
@@ -29,6 +40,8 @@ const remove = (boardId, taskId) => {
   }
   return task;
 };
+
+const remove = (boardId, taskId) => getByIdAndRemove(boardId, taskId);
 
 // void
 const removeByAttr = (value, attr) => {
@@ -38,7 +51,7 @@ const removeByAttr = (value, attr) => {
     }
   }
 };
-
+// void
 const setValueByAttr = (value, attr, newValue) => {
   for (let i = TASKS.length - 1; i >= 0; i -= 1) {
     if (TASKS[i][attr] === value) {
